@@ -54,7 +54,7 @@ public:
         int initScore = 0;
         cout << "Enter your name: ";
         cin >> name;
-        Player player = Player(name, initScore);
+        Player player(name, initScore);
         if(CheckIfExist(player)){
             cout << name << " is already in the game!" << endl;
         } else {
@@ -74,6 +74,7 @@ public:
             cout << player.Name << " have joined the game!" << endl;
         }
     }
+    
     bool CheckIfExist(Player player){
         if(board->Search(player))
             return true;
@@ -107,6 +108,7 @@ public:
         board->Delete(deletedPlayer);
         mp.erase(deletedPlayer.Name);
     }
+    
     void LeaveByName(string name){
         Player deletedPlayer(name , mp[name]);
         if(CheckIfExist(deletedPlayer)){
@@ -116,6 +118,7 @@ public:
             cout << "This player is not in the game!" << endl;
         }
     }
+    
     void Update(){
         string name;
         int newScore;
@@ -168,7 +171,7 @@ void menu(GameManger & manager) {
             }
             case 5:
                 manager.Update();
-                return;
+                break;;
             case 6:
                 manager.GetPlayers();
                 break;
@@ -182,37 +185,7 @@ void menu(GameManger & manager) {
 
 
 int main() {
-    // Player head ("head", INT_MIN), tail ("tail", INT_MAX);
-    // SkipList<Player> *mySL = new SkipList<Player>(head, tail);
-    // Player p1("p1", 10);
-    // Player p2("p2", 20);
-    // Player p3("p3", 30);
-    // Player p4("p4", 50);
-    // Player p5("p5", 50);
-    // Player p6("p6", 2);
-
-    // mySL->insert(p1);
-    // mySL->insert(p2);
-    // mySL->insert(p3);
-    // mySL->insert(p4);
-    // mySL->insert(p5);
-    // mySL->insert(p6);
-
-    // mySL->printSkipList();
-
-    // cout << "-------------------------\n";
-
-    mySL->print();
-
-    // mySL->printSkipList();
-    
-    
     GameManger manager;
     menu(manager);
-
-    Player removed ("p4", 50);
-    mySL->Delete(removed);
-
-    mySL->print();
     return 0;
 }

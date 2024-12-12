@@ -51,28 +51,31 @@ public:
     void print();
 };
 
-// Constructor
+
 template <class T>
 SkipList<T>::SkipList(T minValue, T maxValue) : Levels(0), length(0), minValue(minValue), maxValue(maxValue)
 {
     // Set seed for random number generator to ensure randomness
     srand(static_cast<unsigned int>(time(NULL)));
 
-    Node<T> *Head1 = new Node<T>(minValue);
+    Node<T> *head = new Node<T>(minValue);
 
-    Node<T> *Tail1 = new Node<T>(maxValue);
+    Node<T> *tail = new Node<T>(maxValue);
 
-    Head1->next = Tail1;
+    head->next = tail;
 
-    Tail1->prev = Head1;
+    tail->prev = head;
 
-    Heads.push_back(Head1);
+    Heads.push_back(head);
 }
 
 template <class T>
 int SkipList<T>::size(){
     return length;
 }
+
+
+// search
 
 template <class T>
 Node<T> *SkipList<T>::Search(T key)
@@ -92,6 +95,8 @@ Node<T> *SkipList<T>::Search(T key)
     }
     return nullptr;
 }
+
+// insertion
 
 template <class T>
 Node<T> *SkipList<T>::insertToLevel(T data, int level, Node<T> *Down)
@@ -118,10 +123,10 @@ void SkipList<T>::insert(T data)
 {
     int i = 0;
     length++;
-    Node<T> *Down = insertToLevel(data, i, nullptr); // Insert data to bottom level
-    // Now Decide Whether to Create Top Layer and Insert;
-    int Coin_Toss = rand() % 2;
-    while (Coin_Toss == 0)
+    Node<T> *Down = insertToLevel(data, i, nullptr); 
+
+    int isAddUp = (rand() % 2) == 0;
+    while (isAddUp == 0)
     {
         i++;
         if (Levels < i)
@@ -138,11 +143,14 @@ void SkipList<T>::insert(T data)
         Node<T> *N = insertToLevel(data, i, Down);
         Down->up = N;
         Down = N;
-        Coin_Toss = rand() % 2;
+        isAddUp = (rand() % 2) == 0;
     }
 
     return;
 }
+
+
+// deleting
 
 template <class T>
 void SkipList<T>::Delete(T N){
@@ -169,6 +177,9 @@ void SkipList<T>::DeleteNode(Node<T> *N)
 
     length--;
 }
+
+
+// printing in all ways
 
 template <class T>
 void SkipList<T>::printTopN(int n)
