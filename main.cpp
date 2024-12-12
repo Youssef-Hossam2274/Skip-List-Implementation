@@ -1,28 +1,25 @@
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
 #include "SkipList.cpp"
 using namespace std;
 
+int main()
+{
+  SkipList<int> *mySL = new SkipList<int>();
+
+  mySL->insert(23);
+  mySL->insert(20);
+  mySL->insert(8);
+  mySL->insert(5);
+  mySL->insert(100);
+  mySL->insert(3);
+  mySL->insert(3);
 
 
-int main(){
-    SkipList<int> skiplist;
+  mySL->printData();
 
-    skiplist.Insert(1);    
-    skiplist.Insert(2);    
-    skiplist.Insert(7);
-
-    skiplist.print();
-
-
-    skiplist.Delete(1);
-    skiplist.print();
-
-    skiplist.Delete(4);
-    skiplist.print();
-    
-    skiplist.Delete(2);
-    skiplist.print();
-
-    return 0;
+  mySL->Delete(3);
+  cout << "--------------------------------\n";
+  mySL->printData();
+  return 0;
 }
