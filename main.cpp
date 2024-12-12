@@ -21,5 +21,9 @@ int main()
   mySL->Delete(3);
   cout << "--------------------------------\n";
   mySL->printData();
+
+  cout << mySL->length << '\n';
+
+  mySL->printTopN(5);
   return 0;
 }

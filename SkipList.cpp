@@ -4,20 +4,20 @@
 #include <random>
 #include <ctime>
 #include <vector>
-
+#include <algorithm>
 using namespace std;
+
+const int inf = 1e8, minusInf = -1e8;
 
 template <class T>
 struct Node {
  public:
-  // Node Data
   T key;
   Node<T>* next;
   Node<T>* prev;
   Node<T>* up;
   Node<T>* down;
 
-  // Node Constructor
   Node(const T& key) {
     this->key = key;
     this->next = nullptr;
@@ -25,18 +25,7 @@ struct Node {
     this->up = nullptr;
     this->down = nullptr;
   };
-
-  // IF KEY IS LESS THAN INFINITY AND GREATER THAN NEGATIVE INFINITY --> Print
-  void printData() {
-    if (key < 2147483645 && key > -2147483645) cout << key << " ";
-
-    // TO SEE UP,DOwN,LEFT,RIGHT NODE DATA FOR EVERY NODE, UNCOMMENT BELOW
-    /* if(down != nullptr)cout << ": down = " << down->key << "  / ";
-     if(up != nullptr)cout << ": up = " << up->key << "  / ";
-     if(prev != nullptr)cout << ": prev = " << prev->key << "  / ";
-     if(next != nullptr)cout << ": next = " << next->key << "  / ";
-     */
-  };
+  Node(){}
 };
 
 template <class T>
@@ -49,7 +38,7 @@ class SkipList {
   void insert(T N);
 
   // To insert to a specific Level
-  Node<T>* insert_to_level(
+  Node<T>* insertToLevel(
       T N, int level, Node<T>* down);  // Returns the pointer to the up node
 
   // Print all of Linked List Data
@@ -62,22 +51,26 @@ class SkipList {
   void Delete(T N);
 
   // Deletes a Node from its linked list
-  void Delete_Node(Node<T>* N);
+  void DeleteNode(Node<T>* N);
+
+  void printTopN(int n);
 
   vector<Node<T>*> Heads;  // Head of each Linked List in Skiplist
 
   int Levels;  // Number of Levels in SkipList, Accessed via Heads
+
+  int length;
 };
 
 // Constructor
 template <class T>
-SkipList<T>::SkipList() {
+SkipList<T>::SkipList(): Levels(0), length(0) {
   // Set seed for random number generator to ensure randomness
-  srand(static_cast<unsigned int>(time(NULL)));
+//   srand(static_cast<unsigned int>(time(NULL)));
 
-  Node<T>* Head1 = new Node<T>(-INFINITY);
+  Node<T>* Head1 = new Node<T>(minusInf);
 
-  Node<T>* Tail1 = new Node<T>(INFINITY);
+  Node<T>* Tail1 = new Node<T>(inf);
 
   Head1->next = Tail1;
 
@@ -90,7 +83,7 @@ template <class T>
 Node<T>* SkipList<T>::Search(T key) {
   Node<T>* topleft;
   topleft = Heads[Heads.size() - 1];
-  Node<T>* pt = new Node<T>(-INFINITY);
+  Node<T>* pt = new Node<T>(minusInf);
   pt = topleft;
   while (pt != nullptr) {
     if (pt->key == key) {
@@ -108,7 +101,7 @@ Node<T>* SkipList<T>::Search(T key) {
 // Inserts a node to a level given the data to be inserted, The level to be
 // inserted to , the node that will be the down of the node added
 template <class T>
-Node<T>* SkipList<T>::insert_to_level(T data, int level, Node<T>* Down) {
+Node<T>* SkipList<T>::insertToLevel(T data, int level, Node<T>* Down) {
   int i = level;
   Node<T>* N = new Node<T>(data);
   N->down = Down;
@@ -129,27 +122,29 @@ Node<T>* SkipList<T>::insert_to_level(T data, int level, Node<T>* Down) {
 template <class T>
 void SkipList<T>::insert(T data) {
   int i = 0;
-  Node<T>* Down =
-      insert_to_level(data, i, nullptr);  // Insert data to bottom level
+  length++;
+  Node<T>* Down = insertToLevel(data, i, nullptr);  // Insert data to bottom level
   // Now Decide Whether to Create Top Layer and Insert;
   int Coin_Toss = rand() % 2;
   while (Coin_Toss == 0) {
     i++;
     if (Levels < i) {
       Levels += 1;
-      Node<T>* NewHead = new Node<T>(-INFINITY);
-      Node<T>* NewTail = new Node<T>(INFINITY);
+      Node<T>* NewHead = new Node<T>(minusInf);
+      Node<T>* NewTail = new Node<T>(inf);
       NewHead->next = NewTail;
       NewTail->prev = NewHead;
       Heads[i - 1]->up = NewHead;
       NewHead->down = Heads[i - 1];
       Heads.push_back(NewHead);
     }
-    Node<T>* N = insert_to_level(data, i, Down);
+    Node<T>* N = insertToLevel(data, i, Down);
     Down->up = N;
     Down = N;
     Coin_Toss = rand() % 2;
   }
+
+
   return;
 }
 
@@ -158,13 +153,13 @@ void SkipList<T>::Delete(T N) {
   Node<T>* pt = Search(N);
   while (pt != nullptr) {
     Node<T>* temp = pt->down;
-    Delete_Node(pt);
+    DeleteNode(pt);
     pt = temp;
   }
 }
 
 template <class T>
-void SkipList<T>::Delete_Node(Node<T>* N) {
+void SkipList<T>::DeleteNode(Node<T>* N) {
   if (N->down != nullptr) N->down->up = nullptr;
   if (N->up != nullptr) N->up->down = nullptr;
   Node<T>* Next = N->next;
@@ -172,6 +167,30 @@ void SkipList<T>::Delete_Node(Node<T>* N) {
   Prev->next = Next;
   delete (N);
   Next->prev = Prev;
+
+  length--;
+}
+
+template <class T>
+void SkipList<T>::printTopN(int n)
+{
+    int topN = n;
+    if(n > length){
+        cout << "Skip list has a " << length << '\n';
+        topN = length;
+    }
+    cout << "Top " << n << ":\n";
+    vector<T> lastLevel;
+    for(Node<T>* cur = Heads[0]; cur ; cur = cur->next){
+        lastLevel.push_back(cur->key);
+    }
+
+    reverse(lastLevel.begin(), lastLevel.end());
+
+    // start from 1 to avoid the inf
+    for(int i = 1; i <= topN; ++i){
+        cout << lastLevel[i] << '\n';
+    }
 }
 
 // Print Skip List Data By Level
@@ -180,7 +199,7 @@ void SkipList<T>::printData() {
     vector<vector<T>> res;
   for (int i = 0; i != Heads.size(); i++) {
     vector<T> resLevel;
-    Node<T>* pt = new Node<T>(-INFINITY);
+    Node<T>* pt = new Node<T>(minusInf);
     pt = Heads[i];
     while (pt != nullptr) {
       resLevel.push_back(pt->key);
@@ -194,7 +213,12 @@ void SkipList<T>::printData() {
         if(i){
             cout << " -> ";
         }
-        cout << res[level][i];
+        if(res[level][i] == inf)
+            cout << "inf";
+        else if(res[level][i] == minusInf)
+            cout << "-inf";
+        else
+            cout << res[level][i];
     }
     cout << '\n';
   }
