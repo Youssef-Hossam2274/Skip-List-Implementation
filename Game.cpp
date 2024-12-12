@@ -55,12 +55,31 @@ public:
         cout << "Enter your name: ";
         cin >> name;
         Player player = Player(name, initScore);
-        // TODO: validate if this player is exist or not
-        mp[name] = initScore;
-        board->insert(player);
-        cout << name << " have joined the game!" << endl;
+        if(CheckIfExist(player)){
+            cout << name << " is already in the game!" << endl;
+        } else {
+            mp[name] = initScore;
+            board->insert(player);
+            cout << name << " have joined the game!" << endl;
+        }
     }
-    
+
+    void Join(Player player){
+        
+        if(CheckIfExist(player)){
+            cout << player.Name << " is already in the game!" << endl;
+        } else {
+            mp[player.Name] = player.score;
+            board->insert(player);
+            cout << player.Name << " have joined the game!" << endl;
+        }
+    }
+    bool CheckIfExist(Player player){
+        if(board->Search(player))
+            return true;
+        return false;
+    }
+        
     void GetTop_N_Players(){
         int N;
         cout << "Enter the number of top players to display: ";
@@ -86,6 +105,27 @@ public:
         cin >> name;
         Player deletedPlayer(name , mp[name]);
         board->Delete(deletedPlayer);
+        mp.erase(deletedPlayer.Name);
+    }
+    void LeaveByName(string name){
+        Player deletedPlayer(name , mp[name]);
+        if(CheckIfExist(deletedPlayer)){
+            board->Delete(deletedPlayer);
+            mp.erase(deletedPlayer.Name);
+        } else {
+            cout << "This player is not in the game!" << endl;
+        }
+    }
+    void Update(){
+        string name;
+        int newScore;
+        cout << "Enter your name: ";
+        cin >> name;
+        cout << "Enter your new score: ";
+        cin >> newScore;
+        Player updatedPlayer(name, newScore);
+        this->LeaveByName(name);
+        this->Join(updatedPlayer);
     }
 
 };
@@ -97,7 +137,9 @@ void printMenu() {
     cout << "2. Print Player Score" << endl;
     cout << "3. Print Top N Players" << endl;
     cout << "4. Leave Game" << endl;
-    cout << "5. Exit" << endl;
+    cout << "5. Update Score" << endl;
+    cout << "6. Retrive All Players" << endl;
+    cout << "7. Exit" << endl;
     cout << "Enter your choice: ";
 }
 
@@ -125,6 +167,12 @@ void menu(GameManger & manager) {
                 break;
             }
             case 5:
+                manager.Update();
+                return;
+            case 6:
+                manager.GetPlayers();
+                break;
+            case 7:
                 return;
             default:
                 cout << "Invalid choice. Please try again." << endl;
@@ -134,41 +182,35 @@ void menu(GameManger & manager) {
 
 
 int main() {
-    // GameManger manager;
-    // menu(manager);
-    // Player p1("Eslam", 10);
-    // Player p2("Youssuf", 20);
-    // Player p3("Mekkawy", 30);
+    // Player head ("head", INT_MIN), tail ("tail", INT_MAX);
+    // SkipList<Player> *mySL = new SkipList<Player>(head, tail);
+    // Player p1("p1", 10);
+    // Player p2("p2", 20);
+    // Player p3("p3", 30);
+    // Player p4("p4", 50);
+    // Player p5("p5", 50);
+    // Player p6("p6", 2);
 
-    // manager.Join(p1.Name, p1.score);
-    // manager.Join(p2.Name ,p2.score);
-    // manager.Join(p3.Name, p3.score);
+    // mySL->insert(p1);
+    // mySL->insert(p2);
+    // mySL->insert(p3);
+    // mySL->insert(p4);
+    // mySL->insert(p5);
+    // mySL->insert(p6);
 
-    // manager.GetTop_N_Players(2);
-    // menu();
-    Player head ("head", INT_MIN), tail ("tail", INT_MAX);
-    SkipList<Player> *mySL = new SkipList<Player>(head, tail);
-    Player p1("p1", 10);
-    Player p2("p2", 20);
-    Player p3("p3", 30);
-    Player p4("p4", 50);
-    Player p5("p5", 50);
-    Player p6("p6", 2);
+    // mySL->printSkipList();
 
-    mySL->insert(p1);
-    mySL->insert(p2);
-    mySL->insert(p3);
-    mySL->insert(p4);
-    mySL->insert(p5);
-    mySL->insert(p6);
+    // cout << "-------------------------\n";
 
-    mySL->printSkipList();
+    // Player removed ("p4", 50);
+    // mySL->Delete(removed);
 
-    cout << "-------------------------\n";
+    // mySL->printSkipList();
+    
+    
+    GameManger manager;
+    menu(manager);
 
-    Player removed ("p4", 50);
-    mySL->Delete(removed);
-
-    mySL->printSkipList();
+    
     return 0;
 }
