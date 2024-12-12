@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#inwclude "SkcipList.cpp"
 using namespace std;
 
 
@@ -7,7 +6,8 @@ class Player {
 public:
     string Name;
     int score;
-
+    Player (){}
+    
     Player(string name, int score) {
         this->Name = name;
         this->score = score;
