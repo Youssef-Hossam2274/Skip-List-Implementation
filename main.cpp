@@ -19,11 +19,11 @@ int main()
   mySL->insert(3);
 
 
-  mySL->printData();
+  mySL->printSkipList();
 
   mySL->Delete(3);
   cout << "--------------------------------\n";
-  mySL->printData();
+  mySL->printSkipList();
 
   mySL->printTopN(5);
   return 0;

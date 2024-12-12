@@ -45,10 +45,10 @@ public:
     int size();
     Node<T> *Search(T key);
     void insert(T N);
-    void printData();
     void Delete(T N);
     void printTopN(int n);
-
+    void printSkipList();
+    void print();
 };
 
 // Constructor
@@ -201,7 +201,7 @@ void SkipList<T>::printTopN(int n)
 
 // Print Skip List Data By Level
 template <class T>
-void SkipList<T>::printData()
+void SkipList<T>::printSkipList()
 {
     vector<vector<T>> res;
     for (int i = 0; i != Heads.size(); i++)
@@ -234,4 +234,9 @@ void SkipList<T>::printData()
         }
         cout << '\n';
     }
+}
+
+template <class T>
+void SkipList<T>::print()
+{
 }

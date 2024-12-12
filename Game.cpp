@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "SkipList.cpp"
+#include <map>
 using namespace std;
 
 
@@ -39,52 +40,52 @@ public:
 };
 
 class GameManger {
+private:
+    map<string, int> mp;
 public:
     SkipList<Player> *board;
     GameManger(){
         Player head ("head", INT_MIN), tail ("tail", INT_MAX);
         board = new SkipList<Player>(head, tail);
     }
+   
     void Join(){
         string name;
-        int score;
+        int initScore = 0;
         cout << "Enter your name: ";
         cin >> name;
-        cout << "Enter your initial score: ";
-        cin >> score;
-        Player player = Player(name, score);
-        board.insert(player);
+        Player player = Player(name, initScore);
+        // TODO: validate if this player is exist or not
+        mp[name] = initScore;
+        board->insert(player);
         cout << name << " have joined the game!" << endl;
     }
-    void Leave(string name){
-        board.Delete(name);
-    }
-    void GetTop_N_Players(int N){
+    
+    void GetTop_N_Players(){
         int N;
         cout << "Enter the number of top players to display: ";
         cin >> N;  
-        board.printTopN(N);
+        board->printTopN(N);
     }
+    
     void GetPlayers(){
-        board->printData();
+        board->print();
     }
+    
     void PrintPlayerScore(){
         string name;
         cout << "Enter the name of the player: ";
         cin >> name;
-        Player p = board->Search(name); 
-        cout << p << endl;        
+        Player targetPlayer(name, mp[name]);
+        cout << board->Search(targetPlayer)->key << endl;        
     }
+    
     void Leave(){
-
         string name;
-        int score;
         cout << "Enter your name: ";
         cin >> name;
-        cout << "Enter your score: ";
-        cin >> score;
-        Player p = Player(name , score)
-        board->Delete(p);
+        Player deletedPlayer(name , mp[name]);
+        board->Delete(deletedPlayer);
     }
 
 };
@@ -133,8 +134,8 @@ void menu(GameManger & manager) {
 
 
 int main() {
-    GameManger manager;
-    menu(manager);
+    // GameManger manager;
+    // menu(manager);
     // Player p1("Eslam", 10);
     // Player p2("Youssuf", 20);
     // Player p3("Mekkawy", 30);
@@ -161,13 +162,13 @@ int main() {
     mySL->insert(p5);
     mySL->insert(p6);
 
-    mySL->printData();
+    mySL->printSkipList();
 
     cout << "-------------------------\n";
 
     Player removed ("p4", 50);
     mySL->Delete(removed);
 
-    mySL->printData();
+    mySL->printSkipList();
     return 0;
 }
