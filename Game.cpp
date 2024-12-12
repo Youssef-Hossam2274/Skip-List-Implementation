@@ -141,7 +141,16 @@ public:
 
 int main() {
     // menu();
-    Player p = Player("Eslam" , 5);
-    cout << p; 
+  Player head ("head", INT_MIN), tail ("tail", INT_MAX);
+  SkipList<Player> *mySL = new SkipList<Player>(head, tail);
+  Player p1("p1", 10);
+  Player p2("p2", 20);
+  Player p3("p3", 30);
+
+  mySL->insert(p1);
+  mySL->insert(p2);
+  mySL->insert(p3);
+
+  mySL->printData();
     return 0;
 }
