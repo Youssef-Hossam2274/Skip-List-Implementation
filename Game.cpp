@@ -162,13 +162,13 @@ int main() {
     mySL->insert(p5);
     mySL->insert(p6);
 
-    mySL->printSkipList();
+    mySL->print();
 
     cout << "-------------------------\n";
 
     Player removed ("p4", 50);
     mySL->Delete(removed);
 
-    mySL->printSkipList();
+    mySL->print();
     return 0;
 }

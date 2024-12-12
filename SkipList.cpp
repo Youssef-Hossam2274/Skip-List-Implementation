@@ -84,18 +84,15 @@ Node<T> *SkipList<T>::Search(T key)
     while (pt != nullptr)
     {
         if (pt->key == key)
-            break;
-        else if (key > pt->key && key >= pt->next->key)
-            pt = pt->next;
-        else if (key > pt->key && key < pt->next->key)
+           return pt;
+        else if(key < pt->next->key)
             pt = pt->down;
+        else
+            pt = pt->next;
     }
-    return pt;
+    return nullptr;
 }
 
-// Insert to Level Function
-// Inserts a node to a level given the data to be inserted, The level to be
-// inserted to , the node that will be the down of the node added
 template <class T>
 Node<T> *SkipList<T>::insertToLevel(T data, int level, Node<T> *Down)
 {
@@ -116,7 +113,6 @@ Node<T> *SkipList<T>::insertToLevel(T data, int level, Node<T> *Down)
     return N;
 }
 
-// Insert to skip list function
 template <class T>
 void SkipList<T>::insert(T data)
 {
@@ -199,7 +195,6 @@ void SkipList<T>::printTopN(int n)
     }
 }
 
-// Print Skip List Data By Level
 template <class T>
 void SkipList<T>::printSkipList()
 {
@@ -237,6 +232,10 @@ void SkipList<T>::printSkipList()
 }
 
 template <class T>
-void SkipList<T>::print()
-{
+void SkipList<T>::print(){
+    for(Node<T>* cur = Heads[0]; cur ; cur = cur->next){
+        if(cur->key == minValue || cur->key == maxValue)
+            continue;
+        cout << cur->key << '\n';
+    }
 }
