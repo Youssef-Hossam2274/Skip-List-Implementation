@@ -38,119 +38,111 @@ public:
 
 };
 
-// class GameManger {
-// public:
-//     SkipList<Player> board;
-//     GameManger(){
+class GameManger {
+public:
+    SkipList<Player> *board;
+    GameManger(){
+        Player head ("head", INT_MIN), tail ("tail", INT_MAX);
+        board = new SkipList<Player>(head, tail);
+    }
+    void Join(){
+        string name;
+        int score;
+        cout << "Enter your name: ";
+        cin >> name;
+        cout << "Enter your initial score: ";
+        cin >> score;
+        Player player = Player(name, score);
+        board.insert(player);
+        cout << name << " have joined the game!" << endl;
+    }
+    void Leave(string name){
+        board.Delete(name);
+    }
+    void GetTop_N_Players(int N){
+        int N;
+        cout << "Enter the number of top players to display: ";
+        cin >> N;  
+        board.printTopN(N);
+    }
+    void GetPlayers(){
+        board->printData();
+    }
+    void PrintPlayerScore(){
+        string name;
+        cout << "Enter the name of the player: ";
+        cin >> name;
+        Player p = board->Search(name); 
+        cout << p << endl;        
+    }
+    void Leave(){
 
-//     }
-//     void Join(string name , int score = 0){
-//         Player player = Player(name, score);
-//         board.insert(player);
-//     }
-//     void Leave(string name){
-//         board.Delete(name);
-//     }
-//     void GetTop_N_Players(int N){
-        
-//         board.printTopN(N);
-//     }
-// };
+        string name;
+        int score;
+        cout << "Enter your name: ";
+        cin >> name;
+        cout << "Enter your score: ";
+        cin >> score;
+        Player p = Player(name , score)
+        board->Delete(p);
+    }
+
+};
 
 
-// void printMenu() {
-//     cout << "Game Menu:" << endl;
-//     cout << "1. Join Game" << endl;
-//     cout << "2. Print Player Score" << endl;
-//     cout << "3. Print Top N Players" << endl;
-//     cout << "4. Leave Game" << endl;
-//     cout << "5. Exit" << endl;
-//     cout << "Enter your choice: ";
-// }
+void printMenu() {
+    cout << "Game Menu:" << endl;
+    cout << "1. Join Game" << endl;
+    cout << "2. Print Player Score" << endl;
+    cout << "3. Print Top N Players" << endl;
+    cout << "4. Leave Game" << endl;
+    cout << "5. Exit" << endl;
+    cout << "Enter your choice: ";
+}
 
-// void menu() {
-//     int choice;
-//     while (true) {
-//         printMenu();
-//         cin >> choice;
+void menu(GameManger & manager) {
+    int choice;
+    while (true) {
+        printMenu();
+        cin >> choice;
 
-//         switch (choice) {
-//             case 1: {
-//                 joinGameMenu();
-//                 break;
-//             }
-//             case 2: {
-//                 printPlayerScoreMenu();
-//                 break;
-//             }
-//             case 3: {
-//                 printTopNPlayersMenu();
-//                 break;
-//             }
-//             case 4: {
-//                 leaveGameMenu();
-//                 break;
-//             }
-//             case 5:
-//                 return;
-//             default:
-//                 cout << "Invalid choice. Please try again." << endl;
-//         }
-//     }
-// }
-
-// void joinGameMenu() {
-//     string name;
-//     int score;
-//     cout << "Enter your name: ";
-//     cin >> name;
-//     cout << "Enter your initial score: ";
-//     cin >> score;
-//     addPlayer(Player(name, score));
-//     cout << "You have joined the game!" << endl;
-// }
-
-// void printPlayerScoreMenu() {
-//     string name;
-//     cout << "Enter the name of the player: ";
-//     cin >> name;
-//     for (const auto& player : players) {
-//         if (player.Name == name) {
-//             cout << "Player " << name << " score: " << player.score << endl;
-//             return;
-//         }
-//     }
-//     cout << "Player not found." << endl;
-// }
-
-// void printTopNPlayersMenu() {
-//     int N;
-//     cout << "Enter the number of top players to display: ";
-//     cin >> N;
-//     printLeaderboard(N);
-// }
-
-// void leaveGameMenu() {
-//     string name;
-//     cout << "Enter your name: ";
-//     cin >> name;
-//     removePlayer(name);
-//     cout << "You have left the game." << endl;
-// }
+        switch (choice) {
+            case 1: {
+                manager.Join();
+                break;
+            }
+            case 2: {
+                manager.PrintPlayerScore();
+                break;
+            }
+            case 3: {
+                manager.GetTop_N_Players(); 
+                break;
+            }
+            case 4: {
+                manager.Leave();
+                break;
+            }
+            case 5:
+                return;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+    }
+}
 
 
 int main() {
-    // menu();
-  Player head ("head", INT_MIN), tail ("tail", INT_MAX);
-  SkipList<Player> *mySL = new SkipList<Player>(head, tail);
-  Player p1("p1", 10);
-  Player p2("p2", 20);
-  Player p3("p3", 30);
+    GameManger manager;
+    menu(manager);
+    // Player p1("Eslam", 10);
+    // Player p2("Youssuf", 20);
+    // Player p3("Mekkawy", 30);
 
-  mySL->insert(p1);
-  mySL->insert(p2);
-  mySL->insert(p3);
+    // manager.Join(p1.Name, p1.score);
+    // manager.Join(p2.Name ,p2.score);
+    // manager.Join(p3.Name, p3.score);
 
-  mySL->printData();
+    // manager.GetTop_N_Players(2);
     return 0;
 }
