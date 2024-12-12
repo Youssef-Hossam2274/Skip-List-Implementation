@@ -7,7 +7,8 @@ class Player {
 public:
     string Name;
     int score;
-
+    Player (){}
+    
     Player(string name, int score) {
         this->Name = name;
         this->score = score;
