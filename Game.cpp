@@ -23,7 +23,7 @@ public:
         return this->score > other.score;
     }
     bool operator==(const Player& other) const {
-        return this->score == other.score;
+        return (this->score == other.score && this->Name == other.Name);
     }
     bool operator<=(const Player& other) const {
         return this->score <= other.score;
@@ -32,7 +32,7 @@ public:
         return this->score >= other.score;
     }
    friend ostream& operator<<(ostream& os, const Player& other) {
-        os << other.Name << "   " << other.score;
+        os << "{" << other.Name << "," << other.score << '}';
         return os;
     } 
 
@@ -144,5 +144,30 @@ int main() {
     // manager.Join(p3.Name, p3.score);
 
     // manager.GetTop_N_Players(2);
+    // menu();
+    Player head ("head", INT_MIN), tail ("tail", INT_MAX);
+    SkipList<Player> *mySL = new SkipList<Player>(head, tail);
+    Player p1("p1", 10);
+    Player p2("p2", 20);
+    Player p3("p3", 30);
+    Player p4("p4", 50);
+    Player p5("p5", 50);
+    Player p6("p6", 2);
+
+    mySL->insert(p1);
+    mySL->insert(p2);
+    mySL->insert(p3);
+    mySL->insert(p4);
+    mySL->insert(p5);
+    mySL->insert(p6);
+
+    mySL->printData();
+
+    cout << "-------------------------\n";
+
+    Player removed ("p4", 50);
+    mySL->Delete(removed);
+
+    mySL->printData();
     return 0;
 }

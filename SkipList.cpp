@@ -17,8 +17,7 @@ public:
     Node<T> *up;
     Node<T> *down;
 
-    Node(const T &key)
-    {
+    Node(const T &key){
         this->key = key;
         this->next = nullptr;
         this->prev = nullptr;
@@ -31,52 +30,37 @@ public:
 template <class T>
 class SkipList
 {
-public:
-    // Constructor for Doubly Linked List
-    SkipList() {};
-    SkipList(T headVal, T tailVal);
+private:
+    T minValue;
+    T maxValue;
+    int Levels;
+    int length;
+    vector<Node<T> *> Heads; 
 
-    // Insert Node with key N to maintain Ordered Linked List
-    void insert(T N);
-
-    // To insert to a specific Level
-    Node<T> *insertToLevel(
-        T N, int level, Node<T> *down); // Returns the pointer to the up node
-
-    // Print all of Linked List Data
-    void printData();
-
-    // Search for node, return Node if found
-    Node<T> *Search(T key);
-
-    // Deletes node from skip list
-    void Delete(T N);
-
-    // Deletes a Node from its linked list
+    Node<T> *insertToLevel(T N, int level, Node<T> *down);
     void DeleteNode(Node<T> *N);
-
+public:
+    SkipList() {};
+    SkipList(T minValue, T maxValue);
+    int size();
+    Node<T> *Search(T key);
+    void insert(T N);
+    void printData();
+    void Delete(T N);
     void printTopN(int n);
 
-    vector<Node<T> *> Heads; // Head of each Linked List in Skiplist
-
-    int Levels; // Number of Levels in SkipList, Accessed via Heads
-
-    int length;
-
-    T headVal;
-    T tailVal;
 };
 
 // Constructor
 template <class T>
-SkipList<T>::SkipList(T headVal, T tailVal) : Levels(0), length(0), headVal(headVal), tailVal(tailVal)
+SkipList<T>::SkipList(T minValue, T maxValue) : Levels(0), length(0), minValue(minValue), maxValue(maxValue)
 {
     // Set seed for random number generator to ensure randomness
-    //   srand(static_cast<unsigned int>(time(NULL)));
+    srand(static_cast<unsigned int>(time(NULL)));
 
-    Node<T> *Head1 = new Node<T>(headVal);
+    Node<T> *Head1 = new Node<T>(minValue);
 
-    Node<T> *Tail1 = new Node<T>(tailVal);
+    Node<T> *Tail1 = new Node<T>(maxValue);
 
     Head1->next = Tail1;
 
@@ -86,26 +70,25 @@ SkipList<T>::SkipList(T headVal, T tailVal) : Levels(0), length(0), headVal(head
 }
 
 template <class T>
+int SkipList<T>::size(){
+    return length;
+}
+
+template <class T>
 Node<T> *SkipList<T>::Search(T key)
 {
     Node<T> *topleft;
     topleft = Heads[Heads.size() - 1];
-    Node<T> *pt = new Node<T>(headVal);
+    Node<T> *pt = new Node<T>(minValue);
     pt = topleft;
     while (pt != nullptr)
     {
         if (pt->key == key)
-        {
             break;
-        }
         else if (key > pt->key && key >= pt->next->key)
-        {
             pt = pt->next;
-        }
         else if (key > pt->key && key < pt->next->key)
-        {
             pt = pt->down;
-        }
     }
     return pt;
 }
@@ -148,8 +131,8 @@ void SkipList<T>::insert(T data)
         if (Levels < i)
         {
             Levels += 1;
-            Node<T> *NewHead = new Node<T>(headVal);
-            Node<T> *NewTail = new Node<T>(tailVal);
+            Node<T> *NewHead = new Node<T>(minValue);
+            Node<T> *NewTail = new Node<T>(maxValue);
             NewHead->next = NewTail;
             NewTail->prev = NewHead;
             Heads[i - 1]->up = NewHead;
@@ -166,11 +149,9 @@ void SkipList<T>::insert(T data)
 }
 
 template <class T>
-void SkipList<T>::Delete(T N)
-{
+void SkipList<T>::Delete(T N){
     Node<T> *pt = Search(N);
-    while (pt != nullptr)
-    {
+    while (pt != nullptr){
         Node<T> *temp = pt->down;
         DeleteNode(pt);
         pt = temp;
@@ -226,7 +207,7 @@ void SkipList<T>::printData()
     for (int i = 0; i != Heads.size(); i++)
     {
         vector<T> resLevel;
-        Node<T> *pt = new Node<T>(headVal);
+        Node<T> *pt = new Node<T>(minValue);
         pt = Heads[i];
         while (pt != nullptr)
         {
@@ -244,10 +225,10 @@ void SkipList<T>::printData()
             {
                 cout << " -> ";
             }
-            if (res[level][i] == tailVal)
-                cout << "tailVal";
-            else if (res[level][i] == headVal)
-                cout << "-tailVal";
+            if (res[level][i] == minValue)
+                cout << "-inf";
+            else if (res[level][i] == maxValue)
+                cout << "inf";
             else
                 cout << res[level][i];
         }
